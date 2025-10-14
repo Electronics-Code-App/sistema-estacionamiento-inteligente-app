@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const SensorViewer: React.FC = () => {
-  const [mensaje, setMensaje] = useState<string>('');
+const SensorViewer = () => {
+  const [dato, setDato] = useState('');
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const intervalo = setInterval(() => {
       axios.get(`${import.meta.env.VITE_API_URL}/api/sensor-data`)
-        .then(res => setMensaje(res.data.dato))
-        .catch(err => console.error('Error al obtener datos del sensor:', err));
+        .then(res => {
+          if (res.data && res.data.dato !== undefined) {
+            setDato(res.data.dato);
+          }
+        })
+        .catch(err => {
+          console.error('Error al obtener dato del sensor:', err);
+        });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalo);
   }, []);
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="text-center">
-        <h3>Dato del Sensor:</h3>
-        <div className="alert alert-primary mt-3">
-          {mensaje || 'Esperando datos...'}
-        </div>
-      </div>
+    <div className="container mt-5">
+      <h4>Dato actual del sensor:</h4>
+      <div className="alert alert-info">{dato}</div>
     </div>
   );
 };
