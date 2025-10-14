@@ -1,5 +1,8 @@
 package com.estacionamiento.hardware;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import com.fazecast.jSerialComm.SerialPort;
 
 public class SerialLibreria {
@@ -17,15 +20,14 @@ public class SerialLibreria {
     public String leerLinea() {
         if (puerto == null || !puerto.isOpen()) return null;
 
-        StringBuilder sb = new StringBuilder();
-        while (puerto.bytesAvailable() > 0) {
-            byte[] buffer = new byte[1];
-            puerto.readBytes(buffer, 1);
-            char c = (char) buffer[0];
-            if (c == '\n') break;
-            sb.append(c);
+        try {
+            InputStreamReader reader = new InputStreamReader(puerto.getInputStream());
+            BufferedReader br = new BufferedReader(reader);
+            return br.readLine(); // ← Aquí se lee la línea completa
+        } catch (Exception e) {
+            System.out.println("Error leyendo datos: " + e.getMessage());
+            return null;
         }
-        return sb.toString().trim();
     }
 
     // 3. Enviar un comando al Arduino
