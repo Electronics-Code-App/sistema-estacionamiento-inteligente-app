@@ -1,30 +1,25 @@
-# Etapa 1: Construcción con Maven y Java 21
-FROM maven:3.8.6-eclipse-temurin-21 AS build
+# Etapa 1: Build con Maven y Java 21
+FROM maven:3.9.11-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copiamos el pom primero para cachear dependencias si no cambian
+# Copiamos los archivos de proyecto
 COPY pom.xml .
-
-# Descargamos las dependencias (optimiza la build)
-RUN mvn dependency:go-offline
-
-# Copiamos el código fuente
 COPY src ./src
 
-# Construimos el proyecto (skip tests para acelerar)
+# Construimos el proyecto y empaquetamos el JAR
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Imagen ligera para ejecutar la app con Java 21
-FROM eclipse-temurin:21-jdk-focal
+# Etapa 2: Imagen runtime con solo JDK 21 para correr la app
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copiamos el JAR desde la etapa de build
-COPY --from=build /app/target/backend-1.0.0.jar app.jar
+# Copiamos el JAR construido en la etapa build
+COPY --from=build /app/target/*.jar app.jar
 
-# Exponemos el puerto que usa Spring Boot (por defecto 8080)
+# Exponemos el puerto que usa tu aplicación
 EXPOSE 8080
 
-# Comando para ejecutar la app
+# Comando para ejecutar el JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
