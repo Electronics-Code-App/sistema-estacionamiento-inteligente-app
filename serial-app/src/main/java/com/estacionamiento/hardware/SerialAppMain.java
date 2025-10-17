@@ -21,26 +21,17 @@ public class SerialAppMain {
         System.out.println("Leyendo datos...");
 
         try {
-            for (int i = 0; i < 5; i++) {
-                String linea = serial.leerLinea();
-                if (linea != null && !linea.isEmpty()) {
-                    System.out.println("Arduino dice: " + linea);
-
-                    emisor.enviarDato(linea);
-
-                } else {
-                    System.out.println("No se recibió dato.");
+            while (true) {
+                String linea;
+                while ((linea = serial.leerLinea()) != null) {
+                    linea = linea.trim();
+                    if (!linea.isEmpty()) {
+                        System.out.println("Arduino dice: " + linea);
+                        emisor.enviarDato(linea);
+                    }
                 }
-                Thread.sleep(1000);
+                Thread.sleep(50);
             }
-
-            serial.enviarComando("LED_ON");
-            System.out.println("Comando enviado: LED_ON");
-            Thread.sleep(1000);
-
-            serial.enviarComando("LED_OFF");
-            System.out.println("Comando enviado: LED_OFF");
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
