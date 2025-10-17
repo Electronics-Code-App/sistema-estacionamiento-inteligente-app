@@ -1,17 +1,25 @@
 package com.estacionamiento.hardware;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class SerialAppMain {
 
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.configure()
+            .directory("./")
+            .ignoreIfMissing()
+            .load();
+
+        String backendUrl = dotenv.get("BACKEND_URL");
+        SerialEmisor emisor = new SerialEmisor(backendUrl);
         SerialLibreria serial = new SerialLibreria();
-        SerialEmisor emisor = new SerialEmisor("http://localhost:8080");
 
         String puerto = "COM3";
         int baudios = 9600;
 
         System.out.println("Conectando al puerto " + puerto + "...");
-        boolean conectado = serial.conectarPuerto(puerto, baudios);
 
+        boolean conectado = serial.conectarPuerto(puerto, baudios);
         if (!conectado) {
             System.out.println("No se pudo conectar al puerto.");
             return;
