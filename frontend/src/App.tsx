@@ -1,9 +1,5 @@
-import SensorViewer from './components/SensorViewer';
-
+import Dashboard from './components/Dashboard';
 function App() {
-  return (
-      <SensorViewer />
-  );
+  return <Dashboard />;
 }
-
 export default App;
