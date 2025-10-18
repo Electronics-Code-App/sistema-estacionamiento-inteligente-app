@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# 🎯 Frontend - Sistema de Estacionamiento Inteligente Básico
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este módulo es la interfaz visual del sistema de estacionamiento inteligente básico, desarrollada con **React + TypeScript + Vite**. Permite visualizar en tiempo real el estado del estacionamiento: distancia, posición del servo, detección de vehículo y solicitudes de salida.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧠 Estructura del Proyecto
+```yaml
+frontend/
+├── public/             # Archivos estáticos
+├── src/
+│ ├── assets/           # Recursos estáticos usados por componentes
+│ ├── components/
+│ │ └── Dashboard.tsx   # Panel principal con datos en tiempo real
+│ ├── App.tsx           # Componente raíz
+│ ├── main.tsx          # Punto de entrada de React
+├── .env                # Variable de entorno (URL del backend)
+├── package.json        # Dependencias y scripts
+├── vite.config.ts      # Configuración de Vite
+...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Instalación y Ejecución Local
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# 1. Ir al directorio del frontend
+cd frontend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 2. Instalar dependencias
+npm install
+
+# 3. Ejecutar en modo desarrollo
+npm run dev
 ```
+Por defecto se abre en: `http://localhost:5173`
+
+## 🌐 Variables de Entorno
+Crea un archivo `.env` en la raíz del frontend con el siguiente contenido:
+
+```properties
+VITE_API_URL=https://tu-backend-url.com
+```
+Esta variable conecta el frontend con el backend desplegado o local.
+
+## 🚀 Despliegue
+Este frontend está pensado para ser desplegado en Vercel.
+Configuración típica en Vercel:
+
+- [x] Framework Preset: `Vite`
+- [x] Root Directory: `frontend`
+- [x] Build Command: `npm run build`
+- [x] Output Directory: `dist`
+- [x] Install Command: `npm install`
+- [x] Environment Variables: `VITE_API_URL=https://tu-backend-url.com`
+
+## 📸 Vista del Dashboard (sin backend levantado)
+
+![Dashboard](public/images/dashboard.png)
