@@ -52,12 +52,20 @@ public class RegistroService {
 
     @Transactional
     public RegistroSalida registrarSalida(RegistroSalida salida) {
+        Empleado empleado = empleadoRepo.findById(salida.getEmpleado().getId())
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        TipoVehiculo tipoVehiculo = tipoVehiculoRepo.findById(salida.getTipoVehiculo().getId())
+                .orElseThrow(() -> new RuntimeException("Tipo de vehículo no encontrado"));
+
         EspacioEstacionamiento espacio = espacioRepo.findById(salida.getEspacio().getId())
                 .orElseThrow(() -> new RuntimeException("Espacio no encontrado"));
 
         espacio.setOcupado(false);
         espacioRepo.save(espacio);
 
+        salida.setEmpleado(empleado);
+        salida.setTipoVehiculo(tipoVehiculo);
         salida.setEspacio(espacio);
         salida.setFechaHoraSalida(LocalDateTime.now());
 
