@@ -4,74 +4,105 @@
   --gray-bg: #f4f5f6;
 }
 
-/* ===== CONTENEDOR PRINCIPAL ===== */
+/* ===== CONTENEDOR ===== */
 .dashboard-container {
-  text-align: center;
-  padding: 1rem 1rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-items: center;
+  padding: 1rem;
   color: #333;
 }
 
 .dashboard-title {
   color: var(--primary);
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
 }
 
-/* ===== CARD VEHICULOS ===== */
-.dashboard-card {
-  background-color: var(--gray-bg);
+/* ===== GRID PRINCIPAL ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* ===== CHART (BARRAS) ===== */
+.dashboard-chart {
+  background: white;
   border-radius: 15px;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  max-width: 400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.dashboard-chart h5 {
+  margin-bottom: 1rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ===== CARD (PASTEL) ===== */
+.dashboard-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
 }
 
-/* ===== COLOR GRADIENTE ===== */
-.vehiculos-card {
-  background: linear-gradient(135deg, var(--secondary), #40b2f5);
-  color: white;
-}
-
-/* ===== TEXTO ===== */
-.dashboard-icon {
-  font-size: 2rem;
-  margin-bottom: 0.8rem;
-}
-
-.dashboard-card h5 {
-  font-weight: 600;
+.pastel-card h5 {
+  color: var(--primary);
   margin-bottom: 0.5rem;
 }
 
-.dashboard-number {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
+.pastel-subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 0.5rem;
 }
 
-.dashboard-sub {
-  font-size: 0.95rem;
-  opacity: 0.9;
+.pastel-subtitle strong {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+/* ===== TEXTO SIN DATOS ===== */
+.no-data {
+  text-align: center;
+  color: #777;
+  font-style: italic;
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .dashboard-card {
-    padding: 1.5rem 1rem;
-    max-width: 100%;
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    justify-items: center;
   }
 
-  .dashboard-number {
-    font-size: 1.6rem;
+  .dashboard-chart,
+  .dashboard-card {
+    width: 100%;
+    height: auto;
   }
 }
