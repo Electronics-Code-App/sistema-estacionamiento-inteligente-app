@@ -9,7 +9,7 @@ import {
   FaListAlt,
 } from 'react-icons/fa';
 
-import './hardware.css'; // ✅ Importa los estilos
+import './Hardware.css';
 
 import arduinoLogoActivo from '../../assets/arduino-logo-activo.png';
 import arduinoLogoDesactivo from '../../assets/arduino-logo-desactivo.png';

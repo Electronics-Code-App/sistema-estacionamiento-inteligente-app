@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaCarAlt, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import "./registro.css";
+import "./Registro.css";
 
 export default function Registro() {
   const [ingresos, setIngresos] = useState(0);

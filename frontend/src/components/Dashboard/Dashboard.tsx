@@ -1,5 +1,5 @@
 import { FaChartPie, FaCarAlt } from "react-icons/fa";
-import "./dashboard.css";
+import "./Dashboard.css";
 
 export default function Dashboard() {
   return (
