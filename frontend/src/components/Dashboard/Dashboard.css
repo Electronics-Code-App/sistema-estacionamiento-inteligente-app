@@ -1,0 +1,77 @@
+:root {
+  --primary: #662781;
+  --secondary: #2496d3;
+  --gray-bg: #f4f5f6;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.dashboard-container {
+  text-align: center;
+  padding: 1rem 1rem;
+  color: #333;
+}
+
+.dashboard-title {
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== CARD VEHICULOS ===== */
+.dashboard-card {
+  background-color: var(--gray-bg);
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== COLOR GRADIENTE ===== */
+.vehiculos-card {
+  background: linear-gradient(135deg, var(--secondary), #40b2f5);
+  color: white;
+}
+
+/* ===== TEXTO ===== */
+.dashboard-icon {
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.dashboard-card h5 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.dashboard-sub {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .dashboard-card {
+    padding: 1.5rem 1rem;
+    max-width: 100%;
+  }
+
+  .dashboard-number {
+    font-size: 1.6rem;
+  }
+}

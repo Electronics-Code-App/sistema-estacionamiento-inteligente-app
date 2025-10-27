@@ -1,0 +1,113 @@
+:root {
+  --primary: #662781;
+  --secondary: #2496d3;
+  --gray-bg: #f4f5f6;
+}
+
+/* ======= CONTENEDOR GENERAL ======= */
+.registro-container {
+  text-align: center;
+  padding: 1rem 1rem;
+  color: #333;
+}
+
+.registro-title {
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ======= BOTONES ======= */
+.registro-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btn-ingreso,
+.btn-salida {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-ingreso {
+  background-color: var(--secondary);
+  box-shadow: 0 4px 10px rgba(36, 150, 211, 0.3);
+}
+
+.btn-salida {
+  background-color: var(--primary);
+  box-shadow: 0 4px 10px rgba(102, 39, 129, 0.3);
+}
+
+.btn-ingreso:hover,
+.btn-salida:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ======= TARJETAS DE CONTADORES ======= */
+.registro-stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.registro-card {
+  background-color: var(--gray-bg);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  min-width: 180px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.registro-card:hover {
+  transform: translateY(-5px);
+}
+
+.registro-card h5 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.registro-card p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.ingreso-card h5 {
+  color: var(--secondary);
+}
+
+.salida-card h5 {
+  color: var(--primary);
+}
+
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
+  .registro-card {
+    min-width: 100%;
+  }
+
+  .btn-ingreso,
+  .btn-salida {
+    width: 100%;
+    justify-content: center;
+  }
+}
