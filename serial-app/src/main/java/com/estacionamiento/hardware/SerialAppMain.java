@@ -13,6 +13,8 @@ public class SerialAppMain {
         String backendUrl = dotenv.get("BACKEND_URL");
         SerialEmisor emisor = new SerialEmisor(backendUrl);
         SerialLibreria serial = new SerialLibreria();
+        SerialHttpServer httpServer = new SerialHttpServer(serial);
+        httpServer.iniciarServidor();
 
         String puerto = "COM3";
         int baudios = 9600;
@@ -25,7 +27,7 @@ public class SerialAppMain {
             return;
         }
 
-        System.out.println("✅ Puerto conectado correctamente.");
+        System.out.println("Puerto conectado correctamente.");
         System.out.println("Leyendo datos...");
 
         try {

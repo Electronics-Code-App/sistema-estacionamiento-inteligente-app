@@ -1,57 +1,63 @@
 package com.estacionamiento.controller;
 
-import com.estacionamiento.dto.DashboardStatusDTO;
 import com.estacionamiento.dto.SensorDataDTO;
+import com.estacionamiento.hardware.SerialCommandService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/sensor-data")
+@CrossOrigin(origins = "*")
 public class SensorDataController {
 
-    private int ultimaDistancia = 0;
-    private int ultimaPosicionServo = 0;
-    private boolean vehiculoDetectado = false;
-    private boolean solicitudSalida = false;
+    private final SerialCommandService serialCommandService;
 
-    @PostMapping("/sensor-data")
-    public void recibirDato(@RequestBody SensorDataDTO data) {
-        String dato = data.getDato();
-        System.out.println("Dato recibido del Arduino: " + dato);
-
-        if (dato.startsWith("DISTANCIA:")) {
-            try {
-                ultimaDistancia = Integer.parseInt(dato.split(":")[1]);
-                vehiculoDetectado = ultimaDistancia < 15;
-            } catch (Exception e) {
-                System.err.println("Error parseando distancia: " + e.getMessage());
-            }
-        }
-
-        if (dato.startsWith("SERVO:")) {
-            try {
-                ultimaPosicionServo = Integer.parseInt(dato.split(":")[1]);
-            } catch (Exception e) {
-                System.err.println("Error parseando servo: " + e.getMessage());
-            }
-        }
-
-        if (dato.equalsIgnoreCase("SOLICITUD_SALIDA")) {
-            solicitudSalida = true;
-        } else if (dato.equalsIgnoreCase("SALIDA_REGISTRADA")) {
-            solicitudSalida = false;
-        }
+    public SensorDataController(SerialCommandService serialCommandService) {
+        this.serialCommandService = serialCommandService;
     }
 
-    @GetMapping("/dashboard-status")
-    public DashboardStatusDTO getDashboardStatus() {
-        DashboardStatusDTO dto = new DashboardStatusDTO();
+    @PostMapping
+    public ResponseEntity<String> recibirDato(@RequestBody SensorDataDTO data) {
+        String dato = data.getDato().trim();
+        System.out.println("Dato recibido desde Arduino: " + dato);
+        serialCommandService.actualizarDato(dato);
+        return ResponseEntity.ok("Dato procesado correctamente");
+    }
 
-        dto.setArduinoConectado(true);
-        dto.setDistancia(ultimaDistancia);
-        dto.setPosicionServo(ultimaPosicionServo);
-        dto.setVehiculoDetectado(vehiculoDetectado);
-        dto.setSolicitudSalida(solicitudSalida);
+    @GetMapping("/estado")
+    public ResponseEntity<?> obtenerEstado() {
+        return ResponseEntity.ok(serialCommandService.obtenerEstadoActual());
+    }
 
-        return dto;
+    @PostMapping("/autorizar-ingreso")
+    public ResponseEntity<String> autorizarIngreso() {
+        System.out.println("Autorizando ingreso...");
+        serialCommandService.enviarComandoAlArduino("AUTORIZADO");
+        serialCommandService.abrirYcerrarPluma();
+        return ResponseEntity.ok("Ingreso autorizado y pluma operada correctamente");
+    }
+
+    @PostMapping("/confirmar-salida")
+    public ResponseEntity<String> confirmarSalida() {
+        System.out.println("Confirmando salida...");
+        serialCommandService.enviarComandoAlArduino("SALIDA_CONFIRMADA");
+        serialCommandService.abrirYcerrarPluma();
+        return ResponseEntity.ok("Salida confirmada correctamente");
+    }
+
+    @PostMapping("/comando")
+    public ResponseEntity<String> enviarComando(@RequestParam String comando) {
+        if (comando.equalsIgnoreCase("ABRIR_CERRAR")) {
+            serialCommandService.abrirYcerrarPluma();
+            return ResponseEntity.ok("Servo abierto y cerrado automáticamente");
+        }
+        serialCommandService.enviarComandoAlArduino(comando);
+        return ResponseEntity.ok("Comando enviado: " + comando);
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<String> resetEstados() {
+        serialCommandService.resetEstados();
+        return ResponseEntity.ok("Estados del hardware reiniciados");
     }
 }
