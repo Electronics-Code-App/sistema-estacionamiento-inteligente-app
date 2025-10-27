@@ -111,3 +111,246 @@
     justify-content: center;
   }
 }
+
+/* ======= MODAL ======= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: #fff !important;
+  border-radius: 16px !important;
+  padding: 2rem 1.5rem;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  animation: slideUp 0.35s ease;
+}
+
+.modal-content h4 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Formulario */
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 2px rgba(36, 150, 211, 0.2);
+}
+
+/* Botones dentro del modal */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.btn-cancelar,
+.btn-registrar {
+  flex: 1;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+}
+
+.btn-registrar {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+}
+
+.btn-cancelar:hover {
+  background-color: #b1b1b1;
+}
+
+.btn-registrar:hover {
+  background-color: #541c69;
+}
+
+/* ======= BOTONES SIN FONDO ======= */
+.registro-buttons-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-icon:hover {
+  color: var(--secondary);
+}
+
+/* ======= TABLA ======= */
+.tabla-registros {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.tabla-registros table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.tabla-registros th,
+.tabla-registros td {
+  padding: 0.8rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-registros th {
+  background-color: var(--gray-bg);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.tabla-registros tr:hover {
+  background-color: #f8f9fa;
+}
+
+.text-ingreso {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.text-salida {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+/* ====== MAPA DE ESTACIONAMIENTO ====== */
+.mapa-estacionamiento {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.espacios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto 1rem;
+}
+
+.espacio {
+  border-radius: 12px;
+  padding: 1rem 0;
+  font-weight: 600;
+  color: #333;
+  border: 2px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.espacio.disponible {
+  background-color: #e7f8e9;
+  border-color: #57c45f;
+}
+
+.espacio.ocupado {
+  background-color: #fde1e1;
+  border-color: #e74c3c;
+}
+
+.leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.icono-disponible {
+  color: #57c45f;
+  margin-right: 5px;
+}
+
+.icono-ocupado {
+  color: #e74c3c;
+  margin-right: 5px;
+}
