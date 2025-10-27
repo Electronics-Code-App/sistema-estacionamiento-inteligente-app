@@ -32,7 +32,7 @@ const Hardware = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${apiBase}/api/dashboard-status`);
+        const res = await axios.get(`${apiBase}/api/sensor-data/estado`);
         setData(res.data);
       } catch (err) {
         console.error('Error al cargar estado:', err);

@@ -33,16 +33,24 @@ interface RegistroIngresoDB {
   fechaHoraIngreso: string;
 }
 
-export default function Registro() {
+const Registro = () => {
   const [showForm, setShowForm] = useState(false);
   const [tipoRegistro, setTipoRegistro] = useState<"INGRESO" | "SALIDA" | null>(null);
-  const [formData, setFormData] = useState({ placa: "", tipoVehiculoId: "", espacio: "" });
+  const [formData, setFormData] = useState({
+    placa: "",
+    tipoVehiculoId: "",
+    espacio: "",
+  });
 
   const [espacios, setEspacios] = useState<Espacio[]>([]);
   const [tiposVehiculo, setTiposVehiculo] = useState<TipoVehiculo[]>([]);
   const [registros, setRegistros] = useState<RegistroData[]>([]);
   const [registrosIngreso, setRegistrosIngreso] = useState<RegistroIngresoDB[]>([]);
   const [vehiculosDentro, setVehiculosDentro] = useState<RegistroIngresoDB[]>([]);
+  const [totalSalidas, setTotalSalidas] = useState(0);
+
+  const [vehiculoDetectado, setVehiculoDetectado] = useState(false);
+  const [solicitudSalida, setSolicitudSalida] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -58,6 +66,7 @@ export default function Registro() {
       setEspacios(espaciosRes.data);
       setTiposVehiculo(tiposRes.data);
       setRegistrosIngreso(ingRes.data);
+      setTotalSalidas(salRes.data.length);
 
       const placasSalidas = new Set(
         salRes.data.map((r: any) => r.registroIngreso?.placa || r.placa)
@@ -105,6 +114,27 @@ export default function Registro() {
   };
 
   useEffect(() => {
+    let activo = true;
+    const fetchEstado = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/sensor-data/estado`);
+        if (!activo) return;
+        setVehiculoDetectado(Boolean(res.data?.vehiculoDetectado));
+        setSolicitudSalida(Boolean(res.data?.solicitudSalida));
+      } catch (err) {
+        console.error("No se pudo consultar estado del hardware");
+      }
+    };
+
+    fetchEstado();
+    const interval = setInterval(fetchEstado, 1200);
+    return () => {
+      activo = false;
+      clearInterval(interval);
+    };
+  }, [API_URL]);
+
+  useEffect(() => {
     loadData();
   }, []);
 
@@ -119,9 +149,7 @@ export default function Registro() {
     setFormData({ placa: "", tipoVehiculoId: "", espacio: "" });
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
@@ -165,10 +193,9 @@ export default function Registro() {
 
     try {
       await axios.post(endpoint, payload);
-      toast.success(`Registro de ${tipoRegistro.toLowerCase()} guardado`);
-
+      toast.success(`Registro de ${tipoRegistro.toLowerCase()} guardado correctamente`);
+      await axios.post(`${API_URL}/api/sensor-data/comando?comando=ABRIR_CERRAR`);
       await loadData();
-
       handleCloseForm();
     } catch (err) {
       console.error(err);
@@ -176,14 +203,32 @@ export default function Registro() {
     }
   };
 
+  const totalEspacios = espacios.length;
+  const disponibles = espacios.filter((e) => !e.ocupado).length;
+
   return (
     <div className="registro-container">
       <h3 className="registro-title">
-        <FaCarAlt className="me-2" />
-        Control de Ingreso y Salida
+        <FaCarAlt className="me-2" /> Control de Ingreso y Salida
       </h3>
 
-      {/* MAPA */}
+      {/* --- Dashboard --- */}
+      <div className="resumen-dashboard">
+        <div className="card-resumen disponible">
+          <h5>Vehículos Dentro</h5>
+          <p>{vehiculosDentro.length}</p>
+        </div>
+        <div className="card-resumen ocupado">
+          <h5>Vehículos Fuera</h5>
+          <p>{totalSalidas}</p>
+        </div>
+        <div className="card-resumen total">
+          <h5>Espacios Totales</h5>
+          <p>{disponibles}/{totalEspacios}</p>
+        </div>
+      </div>
+
+      {/* --- Mapa --- */}
       <div className="mapa-estacionamiento">
         <div className="espacios-grid">
           {espacios.map((esp) => (
@@ -195,28 +240,34 @@ export default function Registro() {
             </div>
           ))}
         </div>
-
         <div className="leyenda">
-          <span>
-            <FaSquare className="icono-disponible" /> Disponible
-          </span>
-          <span>
-            <FaSquare className="icono-ocupado" /> Ocupado
-          </span>
+          <span><FaSquare className="icono-disponible" /> Disponible</span>
+          <span><FaSquare className="icono-ocupado" /> Ocupado</span>
         </div>
       </div>
 
-      {/* BOTONES */}
+      {/* --- Botones controlados por hardware --- */}
       <div className="registro-buttons-right">
-        <button className="btn-icon" onClick={() => handleOpenForm("INGRESO")}>
-          <FaSignInAlt size={20} className="me-2" /> Ingreso
+        <button
+          className={`btn-icon ingreso-btn ${vehiculoDetectado ? "activo" : "inactivo"}`}
+          onClick={() => handleOpenForm("INGRESO")}
+          disabled={!vehiculoDetectado}
+          title={!vehiculoDetectado ? "Esperando detección de vehículo..." : "Registrar ingreso"}
+        >
+          <FaSignInAlt size={20} className="me-2" /> Registrar Ingreso
         </button>
-        <button className="btn-icon" onClick={() => handleOpenForm("SALIDA")}>
-          <FaSignOutAlt size={20} className="me-2" /> Salida
+
+        <button
+          className={`btn-icon salida-btn ${solicitudSalida ? "activo" : "inactivo"}`}
+          onClick={() => handleOpenForm("SALIDA")}
+          disabled={!solicitudSalida}
+          title={!solicitudSalida ? "Esperando solicitud de salida..." : "Registrar salida"}
+        >
+          <FaSignOutAlt size={20} className="me-2" /> Registrar Salida
         </button>
       </div>
 
-      {/* TABLA */}
+      {/* --- Tabla de registros --- */}
       <div className="tabla-registros">
         {registros.length > 0 ? (
           <table>
@@ -233,9 +284,7 @@ export default function Registro() {
             <tbody>
               {registros.map((r, index) => (
                 <tr key={index}>
-                  <td className={r.tipo === "INGRESO" ? "text-ingreso" : "text-salida"}>
-                    {r.tipo}
-                  </td>
+                  <td className={r.tipo === "INGRESO" ? "text-ingreso" : "text-salida"}>{r.tipo}</td>
                   <td>{r.placa}</td>
                   <td>{r.tipoVehiculo}</td>
                   <td>{r.espacio}</td>
@@ -250,15 +299,11 @@ export default function Registro() {
         )}
       </div>
 
-      {/* MODAL FORM */}
+      {/* --- Modal --- */}
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h4>
-              {tipoRegistro === "INGRESO"
-                ? "Registrar Ingreso"
-                : "Registrar Salida"}
-            </h4>
+            <h4>{tipoRegistro === "INGRESO" ? "Registrar Ingreso" : "Registrar Salida"}</h4>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -270,7 +315,7 @@ export default function Registro() {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Seleccione una placa</option>
+                    <option value="">Seleccione una placa registrada</option>
                     {vehiculosDentro.map((r) => (
                       <option key={r.id} value={r.placa}>
                         {r.placa}
@@ -323,9 +368,7 @@ export default function Registro() {
                       value={esp.id}
                       disabled={tipoRegistro === "INGRESO" && esp.ocupado}
                     >
-                      {`${esp.codigo || esp.id} ${
-                        esp.ocupado ? "(Ocupado)" : ""
-                      }`}
+                      {`${esp.codigo || esp.id} ${esp.ocupado ? "(Ocupado)" : ""}`}
                     </option>
                   ))}
                 </select>
@@ -352,3 +395,5 @@ export default function Registro() {
     </div>
   );
 }
+
+export default Registro;
