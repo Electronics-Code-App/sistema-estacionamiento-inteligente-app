@@ -55,9 +55,18 @@ public class SerialCommandService {
         return estado;
     }
 
+    private String obtenerBaseSerialUrl() {
+        String envUrl = System.getenv("SERIAL_APP_URL");
+        if (envUrl != null && !envUrl.isBlank()) {
+            return envUrl.endsWith("/") ? envUrl.substring(0, envUrl.length() - 1) : envUrl;
+        }
+        return "http://localhost:8081";
+    }
+
     public void enviarComandoAlArduino(String comando) {
         try {
-            URL url = new URI("http://localhost:8081/api/serial/comando").toURL();
+            String baseUrl = obtenerBaseSerialUrl();
+            URL url = new URI(baseUrl + "/api/serial/comando").toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -71,7 +80,7 @@ public class SerialCommandService {
             }
 
             int code = conn.getResponseCode();
-            System.out.println("Comando enviado al Arduino: " + comando + " (respuesta " + code + ")");
+            System.out.println("Comando enviado al Arduino (" + baseUrl + "): " + comando + " [HTTP " + code + "]");
             conn.disconnect();
 
         } catch (Exception e) {
@@ -89,7 +98,6 @@ public class SerialCommandService {
                 System.out.println("Pluma cerrada.");
 
                 resetEstados();
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
